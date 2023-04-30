@@ -5,12 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    
+    
    public void PlayGame ()
     {
-        SceneManager.LoadScene("TheMagicShop");
+        if (StaticVar.LevelIndex == 0)
+        {
+            SceneManager.LoadScene("TheMagicShop");
+        }
+        else if (StaticVar.LevelIndex == 1)
+        {
+            SceneManager.LoadSceneAsync("TheMagicShop",LoadSceneMode.Additive);
+        }
+        
     }
 
-    public void QuitGame()
+
+   public void QuitGame()
     {
         Application.Quit();
     }
