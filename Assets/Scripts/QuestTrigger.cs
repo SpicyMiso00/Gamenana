@@ -24,7 +24,14 @@ public class QuestTrigger : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
+    {
+        _isInside = true;
+        _buttonNotifGO.SetActive(true);
+        _onPress += ExecuteQuest;
+    }
+
+    /*private void OnTriggerStay(Collider other)
     {
         if (!_isInside)
         {
@@ -32,7 +39,7 @@ public class QuestTrigger : MonoBehaviour
             _buttonNotifGO.SetActive(true);
             _onPress += ExecuteQuest;
         }
-    }
+    }*/
 
     private void OnTriggerExit(Collider other)
     {

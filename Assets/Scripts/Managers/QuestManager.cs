@@ -17,6 +17,9 @@ public class QuestManager : MonoBehaviour
     [Header("Actor GO")] 
     [SerializeField] private TextMeshProUGUI _actorNameTxt;
     [SerializeField] private Image _actorImg;
+
+    [Header("Dependecies")] 
+    [SerializeField] private SceneTransitionManager _sceneTransitionManager;
     
     [Header("Other GO")]
     [SerializeField] private Button _nextBtn;
@@ -37,20 +40,17 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private GameObject _questGO;
     [SerializeField] private GameObject _winGO;
     [SerializeField] private GameObject _loseGo;
-    
-    
-    
+
+
     [SerializeField] private Slider _slider;
     
     private int _currentActionIndex;
-    private int _score;
-   
+
     private void Awake()
     {
         _nextBtn.onClick.RemoveAllListeners();
         _nextBtn.onClick.AddListener(NextAction);
-        _score = _questData.InitialScore;
-        
+
         _quitButtonLose.onClick.RemoveAllListeners();
         _quitButtonLose.onClick.AddListener(Quit);
         
@@ -59,11 +59,24 @@ public class QuestManager : MonoBehaviour
 
         _restartButton.onClick.RemoveAllListeners();
         _restartButton.onClick.AddListener(Restart);
+
+        
         
     }
 
     public void StartExecute()
     {
+        Debug.Log(StaticVar.LevelIndex);
+        
+        if (StaticVar.Score < 0)
+        {
+            StaticVar.Score = StaticVar.INITIALSCORE;
+            _slider.value = StaticVar.Score; 
+        }
+        else
+        {
+            _slider.value = StaticVar.Score; 
+        }
         _questGO.SetActive(true);
         _currentActionIndex = 0;
         ExecuteContent();
@@ -71,12 +84,15 @@ public class QuestManager : MonoBehaviour
 
     private void Quit()
     {
-        SceneManager.LoadSceneAsync(StaticVar.MAINMENUSCENE, LoadSceneMode.Additive);
+        StaticVar.Score = 0;
+        _sceneTransitionManager.SwitchSceneHandler(-1);
     }
 
     private void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StaticVar.Score = 0;
+        StaticVar.LevelIndex = 1;
+        _sceneTransitionManager.SwitchSceneHandler(1);
     }
     
     
@@ -131,8 +147,17 @@ public class QuestManager : MonoBehaviour
 
     private void UpdateScore(int score)
     {
-        _score += score;
-        _slider.value = _score;
+        StaticVar.Score += score;
+        
+        if (StaticVar.Score > 100)
+        {
+            StaticVar.Score = 100;
+        }
+        else if (StaticVar.Score < 0)
+        {
+            StaticVar.Score = 0;
+        }
+        _slider.value = StaticVar.Score;
     }
 
     private void NextAction()
@@ -144,27 +169,39 @@ public class QuestManager : MonoBehaviour
         }
         else
         {
-            if (_score < _questData.MinimumScore)
+            if (StaticVar.LevelIndex < StaticVar.TOTALSCENE)
             {
-                Lose();
+                StaticVar.LevelIndex += 1;
+                _sceneTransitionManager.SwitchSceneHandler(StaticVar.LevelIndex);
             }
             else
             {
-                Win();
+                if (StaticVar.Score < StaticVar.MINIMUMSCORE)
+                {
+                    Lose();
+                }
+                else
+                {
+                    Win();
+                }
+
+                StaticVar.LevelIndex = 0;
             }
+            
+            
         }
         
     }
 
     private void Win()
     {
-        StaticVar.LevelIndex += 1;
+        
         _winGO.SetActive(true);
     }
 
     private void Lose()
     {
-        _loseGo.SetActive(true);
+        _loseGo.SetActive(true); 
     }
 
 

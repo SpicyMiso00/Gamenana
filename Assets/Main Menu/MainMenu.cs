@@ -5,19 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    
+    [SerializeField] private SceneTransitionManager _sceneTransitionManager;
     
    public void PlayGame ()
     {
-        if (StaticVar.LevelIndex == 0)
-        {
-            SceneManager.LoadScene("TheMagicShop");
-        }
-        else if (StaticVar.LevelIndex == 1)
-        {
-            SceneManager.LoadSceneAsync("TheMagicShop",LoadSceneMode.Additive);
-        }
-        
+        _sceneTransitionManager.SwitchSceneHandler(StaticVar.LevelIndex);
     }
 
 
