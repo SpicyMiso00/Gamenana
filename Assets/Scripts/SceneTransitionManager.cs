@@ -51,7 +51,11 @@ public class SceneTransitionManager : MonoBehaviour
         
     }
     
-    
+    public void HandleFirstScene()
+    {
+        StaticVar.LevelIndex = 1;
+        SwitchSceneHandler(StaticVar.LevelIndex);
+    }
     
     
     

@@ -66,13 +66,16 @@ public class QuestManager : MonoBehaviour
 
     public void StartExecute()
     {
-        Debug.Log(StaticVar.LevelIndex);
+        Debug.Log(StaticVar.Score);
         
         if (StaticVar.Score < 0)
         {
             StaticVar.Score = StaticVar.INITIALSCORE;
+            Debug.Log("Masuk" + StaticVar.Score);
             _slider.value = StaticVar.Score; 
         }
+        
+        
         else
         {
             _slider.value = StaticVar.Score; 
@@ -84,13 +87,11 @@ public class QuestManager : MonoBehaviour
 
     private void Quit()
     {
-        StaticVar.Score = 0;
         _sceneTransitionManager.SwitchSceneHandler(-1);
     }
 
     private void Restart()
     {
-        StaticVar.Score = 0;
         StaticVar.LevelIndex = 1;
         _sceneTransitionManager.SwitchSceneHandler(1);
     }
@@ -167,15 +168,20 @@ public class QuestManager : MonoBehaviour
         {
             ExecuteContent();
         }
+
         else
+        
         {
+            _nextBtn.interactable = false;
+            StaticVar.LevelIndex += 1;
             if (StaticVar.LevelIndex < StaticVar.TOTALSCENE)
             {
-                StaticVar.LevelIndex += 1;
+                Debug.Log (StaticVar.LevelIndex + "CurrentLevelIndex");
                 _sceneTransitionManager.SwitchSceneHandler(StaticVar.LevelIndex);
             }
             else
             {
+                Debug.Log(StaticVar.Score + " " + StaticVar.MINIMUMSCORE);
                 if (StaticVar.Score < StaticVar.MINIMUMSCORE)
                 {
                     Lose();
@@ -185,7 +191,9 @@ public class QuestManager : MonoBehaviour
                     Win();
                 }
 
+                StaticVar.Score = -1;
                 StaticVar.LevelIndex = 0;
+                Debug.Log(StaticVar.Score + " " + StaticVar.MINIMUMSCORE);
             }
             
             
